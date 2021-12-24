@@ -1,6 +1,7 @@
 package me.miquiis.timer.client;
 
 import me.miquiis.timer.Timer;
+import me.miquiis.timer.common.util.EasyGUI;
 import me.miquiis.timer.common.util.RenderUtil;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
@@ -27,7 +28,7 @@ public class ClientEvents {
     public static void render(RenderGameOverlayEvent.Text event)
     {
         verifyRenderer();
-        RenderUtil.renderTextWithShadow(event.getMatrixStack(), fontRenderer, event.getWindow(), "Test", 0, 50, 2, color);
+        EasyGUI.drawAnchoredText(null, event.getMatrixStack(), fontRenderer, event.getWindow(), "Test", 0, 0, 2, color);
     }
 
 }
