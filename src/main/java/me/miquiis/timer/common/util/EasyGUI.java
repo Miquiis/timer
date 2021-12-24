@@ -7,21 +7,23 @@ import net.minecraft.util.text.StringTextComponent;
 
 public class EasyGUI {
 
-    public enum VAnchor {
+    public enum HAnchor {
         LEFT,
-        RIGHT
+        RIGHT,
+        CENTER
     }
 
-    public enum HAnchor {
+    public enum VAnchor {
         TOP,
-        BOTTOM
+        BOTTOM,
+        CENTER
     }
 
     public static class Anchor {
         public HAnchor horizontalAnchor;
         public VAnchor verticalAnchor;
 
-        public Anchor(HAnchor horizontalAnchor, VAnchor verticalAnchor)
+        public Anchor(VAnchor verticalAnchor, HAnchor horizontalAnchor)
         {
             this.horizontalAnchor = horizontalAnchor;
             this.verticalAnchor = verticalAnchor;
@@ -29,12 +31,12 @@ public class EasyGUI {
 
         public Anchor(HAnchor horizontalAnchor)
         {
-            this(horizontalAnchor, null);
+            this(null, horizontalAnchor);
         }
 
         public Anchor(VAnchor verticalAnchor)
         {
-            this(null, verticalAnchor);
+            this(verticalAnchor, null);
         }
 
     }
@@ -44,17 +46,9 @@ public class EasyGUI {
         scale *= window.getGuiScaleFactor() / 2;
         stack.push();
         stack.scale(scale, scale, scale);
-        float horizontalAnchor = ((window.getScaledWidth()) / scale);
-        float verticalAnchor = ((window.getScaledHeight() * 0) / scale);
-        float horizontalSelf = -(fontRenderer.getStringWidth(text));
-        float verticalSelf = 0;
-        float xCalc = horizontalAnchor + horizontalSelf + xOffset;
-        float yCalc = verticalAnchor + verticalSelf + yOffset;
-        System.out.println("xCalc: " + xCalc);
-        System.out.println("yCalc: " + yCalc);
         fontRenderer.drawTextWithShadow(stack, new StringTextComponent(text),
-                xCalc,
-                yCalc,
+                getHorizontalAnchor(anchor, window.getScaledWidth(), scale) + getSelfHorizontalAnchor(anchor, fontRenderer.getStringWidth(text)) + xOffset,
+                getVerticalAnchor(anchor, window.getScaledHeight(), scale) + getSelfVerticalAnchor(anchor, fontRenderer.FONT_HEIGHT) + yOffset,
                 color
         );
         stack.pop();
@@ -62,21 +56,47 @@ public class EasyGUI {
 
     private static float getHorizontalAnchor(Anchor anchor, float width, float scale) {
         if (anchor.horizontalAnchor == null) return 0f;
-        switch (anchor.horizontalAnchor)
-        {
-            case TOP:
-            {
-                return 0f;
-            }
-            case BOTTOM:
-            {
-                return 1f;
-            }
-            default:
-            {
-                return 2f;
-            }
+        if (anchor.horizontalAnchor == HAnchor.RIGHT) {
+            return width / scale;
+        } else if (anchor.horizontalAnchor == HAnchor.CENTER) {
+            return width / 2 / scale;
         }
+        return 0f;
+    }
+
+    private static float getVerticalAnchor(Anchor anchor, float height, float scale) {
+        if (anchor.verticalAnchor == null) return 0f;
+        if (anchor.verticalAnchor == VAnchor.BOTTOM) {
+            return height / scale;
+        } else if (anchor.verticalAnchor == VAnchor.CENTER) {
+            return height / 2 / scale;
+        }
+        return 0f;
+    }
+
+    private static float getSelfHorizontalAnchor(Anchor anchor, float width) {
+        if (anchor.horizontalAnchor == null) return 0f;
+        if (anchor.horizontalAnchor == HAnchor.RIGHT) {
+            return -width;
+        } else if (anchor.horizontalAnchor == HAnchor.CENTER) {
+            return -width / 2;
+        }
+        return 0f;
+    }
+
+    private static float getSelfVerticalAnchor(Anchor anchor, float height) {
+        if (anchor.verticalAnchor == null) return 0f;
+        if (anchor.verticalAnchor == VAnchor.BOTTOM) {
+            return -height;
+        } else if (anchor.verticalAnchor == VAnchor.CENTER) {
+            return -height / 2;
+        }
+        return 0f;
+    }
+
+    public static String color(String message)
+    {
+        return message.replace("&", "\u00a7");
     }
 
 }

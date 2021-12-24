@@ -1,5 +1,7 @@
 package me.miquiis.timer;
 
+import me.miquiis.timer.common.managers.TimerManager;
+import me.miquiis.timer.server.network.TimerNetwork;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
@@ -16,6 +18,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.awt.*;
 import java.util.stream.Collectors;
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -23,7 +26,11 @@ import java.util.stream.Collectors;
 public class Timer
 {
 
+    private static Timer instance;
+
     public final static String MOD_ID = "timer";
+
+    private TimerManager timerManager;
 
     public Timer() {
         // Register the setup method for modloading
@@ -41,11 +48,12 @@ public class Timer
 
     private void setup(final FMLCommonSetupEvent event)
     {
-
+        instance = this;
+        TimerNetwork.init();
+        this.timerManager = new TimerManager(this);
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
-
     }
 
     private void enqueueIMC(final InterModEnqueueEvent event)
@@ -69,5 +77,13 @@ public class Timer
         public static void onBlocksRegistry(final RegistryEvent.Register<Block> blockRegistryEvent) {
 
         }
+    }
+
+    public static Timer getInstance() {
+        return instance;
+    }
+
+    public TimerManager getTimerManager() {
+        return timerManager;
     }
 }
