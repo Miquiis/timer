@@ -43,12 +43,12 @@ public class EasyGUI {
 
     public static void drawAnchoredText(Anchor anchor, MatrixStack stack, FontRenderer fontRenderer, MainWindow window, String text, float xOffset, float yOffset, float scale, int color)
     {
-        scale *= window.getGuiScaleFactor() / 2;
+        scale /= window.getGuiScaleFactor();
         stack.push();
         stack.scale(scale, scale, scale);
         fontRenderer.drawTextWithShadow(stack, new StringTextComponent(text),
-                getHorizontalAnchor(anchor, window.getScaledWidth(), scale) + getSelfHorizontalAnchor(anchor, fontRenderer.getStringWidth(text)) + xOffset,
-                getVerticalAnchor(anchor, window.getScaledHeight(), scale) + getSelfVerticalAnchor(anchor, fontRenderer.FONT_HEIGHT) + yOffset,
+                getHorizontalAnchor(anchor, window.getScaledWidth(), scale) + getSelfHorizontalAnchor(anchor, fontRenderer.getStringWidth(text)) + getScaledOffset(xOffset, scale, window.getGuiScaleFactor()),
+                getVerticalAnchor(anchor, window.getScaledHeight(), scale) + getSelfVerticalAnchor(anchor, fontRenderer.FONT_HEIGHT) + getScaledOffset(yOffset, scale, window.getGuiScaleFactor()),
                 color
         );
         stack.pop();
@@ -92,6 +92,11 @@ public class EasyGUI {
             return -height / 2;
         }
         return 0f;
+    }
+
+    private static float getScaledOffset(float offset, float scale, double guiScale)
+    {
+        return (float) (offset / scale / guiScale);
     }
 
     public static String color(String message)

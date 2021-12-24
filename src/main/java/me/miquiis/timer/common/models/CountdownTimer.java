@@ -45,6 +45,11 @@ public class CountdownTimer {
         return waitForShutdown > 0 & System.currentTimeMillis() >= waitForShutdown + 3000;
     }
 
+    public boolean shouldBlink()
+    {
+        return waitForShutdown > 0 & ((System.currentTimeMillis() - waitForShutdown) / 500) % 2 != 0;
+    }
+
     public String getFormattedTime()
     {
         return String.format("%02d", getHours()) + ":" + String.format("%02d", getMinutes()) + ":" + String.format("%02d", getSeconds());
