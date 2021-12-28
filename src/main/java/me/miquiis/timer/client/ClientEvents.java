@@ -40,27 +40,42 @@ public class ClientEvents {
         verifyRenderer();
         verifyTimerManager();
         //debugRender(event);
-        renderTimer(event);
+        //renderTimer(event);
+        debugRenderBox(event);
     }
 
-    private static void renderTimer(RenderGameOverlayEvent.Text event) {
-        if (timerManager.getCurrentTimer() == null) return;
-        if (timerManager.getCurrentTimer().canShutdown())
-        {
-            timerManager.endTimer();
-            return;
-        }
-        int color = shiftColors(timerManager.getCurrentTimer().getPercentage()).getRGB();
-        if (timerManager.getCurrentTimer().shouldBlink())
-        {
-            color = blinkColor.getRGB();
-        }
-        EasyGUI.drawAnchoredText(new EasyGUI.Anchor(EasyGUI.VAnchor.TOP, EasyGUI.HAnchor.RIGHT), event.getMatrixStack(), fontRenderer, event.getWindow(), timerManager.getCurrentTimer().getFormattedTime(), -25, 25, 5, color);
-    }
+//    private static void renderTimer(RenderGameOverlayEvent.Text event) {
+//        if (timerManager.getCurrentTimer() == null) return;
+//        if (timerManager.getCurrentTimer().canShutdown())
+//        {
+//            timerManager.endTimer();
+//            return;
+//        }
+//        int color = shiftColors(timerManager.getCurrentTimer().getPercentage()).getRGB();
+//        if (timerManager.getCurrentTimer().shouldBlink())
+//        {
+//            color = blinkColor.getRGB();
+//        }
+//        EasyGUI.drawAnchoredText(new EasyGUI.Anchor(EasyGUI.VAnchor.TOP, EasyGUI.HAnchor.RIGHT), event.getMatrixStack(), fontRenderer, event.getWindow(), timerManager.getCurrentTimer().getFormattedTime(), 25, 25, 5, color);
+//    }
 
-    private static void debugRender(RenderGameOverlayEvent.Text event)
+//    private static void debugRender(RenderGameOverlayEvent.Text event)
+//    {
+//        EasyGUI.drawAnchoredText(new EasyGUI.Anchor(EasyGUI.VAnchor.TOP, EasyGUI.HAnchor.LEFT), event.getMatrixStack(), fontRenderer, event.getWindow(), "99:99:99", 50, 50, 5, shiftColors(0.0f).getRGB());
+//    }
+
+//    private static void debugRenderBox(RenderGameOverlayEvent.Text event)
+//    {
+//        EasyGUI.drawAnchoredBox(new EasyGUI.Anchor(EasyGUI.VAnchor.TOP, EasyGUI.HAnchor.RIGHT), event.getMatrixStack(), event.getWindow(), 50, 50, 0,0,1, shiftColors(0.0f).getRGB());
+//    }
+
+    private static void debugRenderBox(RenderGameOverlayEvent.Text event)
     {
-        EasyGUI.drawAnchoredText(new EasyGUI.Anchor(EasyGUI.VAnchor.TOP, EasyGUI.HAnchor.RIGHT), event.getMatrixStack(), fontRenderer, event.getWindow(), "99:99:99", -25, 25, 5, shiftColors(0.0f).getRGB());
+        EasyGUI.BoxGUIElement boxGUIElement = new EasyGUI.BoxGUIElement(new EasyGUI.Anchor(EasyGUI.VAnchor.CENTER, EasyGUI.HAnchor.CENTER), event.getMatrixStack(), event.getWindow(), 0, 0, 50, 50, 5f, greenColor.getRGB());
+
+        EasyGUI.BoxGUIElement insideBox = new EasyGUI.BoxGUIElement(boxGUIElement, new EasyGUI.Anchor(EasyGUI.VAnchor.TOP, EasyGUI.HAnchor.CENTER), 0, 0, 20, 20, 1f, redColor.getRGB());
+
+        boxGUIElement.assignChildren(insideBox).render(null);
     }
 
     private static Color shiftColors(float percentage)
