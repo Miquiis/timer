@@ -7,6 +7,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.util.text.StringTextComponent;
 
 import javax.annotation.Nullable;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -53,6 +54,9 @@ public class EasyGUI {
 
         public Anchor elementAnchor;
 
+        public float elementFixedPosX;
+        public float elementFixedPosY;
+
         public int elementWidth;
         public int elementHeight;
         public float elementPosX;
@@ -85,26 +89,35 @@ public class EasyGUI {
         {
             if (parent != null)
             {
-                this.elementPosX += parent.elementPosX;
-                this.elementPosY += parent.elementPosY;
-                this.elementScale += parent.elementScale;
+                float anchorPointX = parent.elementScale * parent.elementFixedPosX;
+                float anchorPointY = parent.elementScale * parent.elementFixedPosY;
+
+                elementFixedPosX = getHorizontalAnchor(elementAnchor, anchorPointX, parent.elementWidth, elementScale) + getSelfHorizontalAnchor(elementAnchor, elementWidth);
+                elementFixedPosY = getVerticalAnchor(elementAnchor, anchorPointY, parent.elementHeight, elementScale) + getSelfVerticalAnchor(elementAnchor, elementHeight) + getScaledOffset(elementAnchor.verticalAnchor, elementPosY, elementScale, elementWindow.getGuiScaleFactor());
+
+                elementMatrix.push();
+                elementMatrix.translate(elementFixedPosX, elementFixedPosY,0);
+                selfRender();
+                //this.elementChildren.forEach(guiElement -> guiElement.render(this));
+            } else {
+                elementScale /= elementWindow.getGuiScaleFactor();
+                elementMatrix.push();
+                elementMatrix.scale(elementScale, elementScale, elementScale);
+
+                elementFixedPosX = getHorizontalAnchor(elementAnchor, elementWindow.getScaledWidth(), elementScale) + getSelfHorizontalAnchor(elementAnchor, elementWidth) + getScaledOffset(elementAnchor.horizontalAnchor, elementPosX, elementScale, elementWindow.getGuiScaleFactor());
+                elementFixedPosY = getVerticalAnchor(elementAnchor, elementWindow.getScaledHeight(), elementScale) + getSelfVerticalAnchor(elementAnchor, elementHeight) + getScaledOffset(elementAnchor.verticalAnchor, elementPosY, elementScale, elementWindow.getGuiScaleFactor());
+
+                elementMatrix.translate(elementFixedPosX,elementFixedPosY,0);
+
+                selfRender();
+
+                this.elementChildren.forEach(guiElement -> guiElement.render(this));
+
+                elementMatrix.push();
+                elementMatrix.translate(elementFixedPosX * elementScale,elementFixedPosY * elementScale,0);
+                AbstractGui.fill(elementMatrix, 0, 0, 2, 2, Color.CYAN.getRGB());
+                elementMatrix.pop();
             }
-
-            this.elementChildren.forEach(guiElement -> guiElement.render(this));
-
-            elementScale /= elementWindow.getGuiScaleFactor();
-            elementMatrix.push();
-            elementMatrix.scale(elementScale, elementScale, elementScale);
-
-            float baseX = getHorizontalAnchor(elementAnchor, elementWindow.getScaledWidth(), elementScale) + getSelfHorizontalAnchor(elementAnchor, elementWidth) + getScaledOffset(elementAnchor.horizontalAnchor, elementPosX, elementScale, elementWindow.getGuiScaleFactor());
-            float baseY = getVerticalAnchor(elementAnchor, elementWindow.getScaledHeight(), elementScale) + getSelfVerticalAnchor(elementAnchor, elementHeight) + getScaledOffset(elementAnchor.verticalAnchor, elementPosY, elementScale, elementWindow.getGuiScaleFactor());
-
-            elementMatrix.translate(baseX,baseY,0);
-
-            this.elementPosX = baseX;
-            this.elementPosY = baseY;
-
-            selfRender();
         }
 
         protected void selfRender()
@@ -206,6 +219,18 @@ public class EasyGUI {
         return 0f;
     }
 
+    private static float getHorizontalAnchor(Anchor anchor, float startingPoint, float width, float scale) {
+        if (anchor.horizontalAnchor == null) return startingPoint;
+        width += startingPoint;
+        if (anchor.horizontalAnchor == HAnchor.RIGHT) {
+            return width / scale;
+        } else if (anchor.horizontalAnchor == HAnchor.CENTER) {
+            return width / 2;
+        }
+        return startingPoint;
+    }
+
+
     private static float getVerticalAnchor(Anchor anchor, float height, float scale) {
         if (anchor.verticalAnchor == null) return 0f;
         if (anchor.verticalAnchor == VAnchor.BOTTOM) {
@@ -214,6 +239,16 @@ public class EasyGUI {
             return height / 2 / scale;
         }
         return 0f;
+    }
+
+    private static float getVerticalAnchor(Anchor anchor, float startingPoint, float height, float scale) {
+        if (anchor.verticalAnchor == null) return startingPoint;
+        if (anchor.verticalAnchor == VAnchor.BOTTOM) {
+            return height / scale;
+        } else if (anchor.verticalAnchor == VAnchor.CENTER) {
+            return height / 2 / scale;
+        }
+        return startingPoint;
     }
 
     private static float getSelfHorizontalAnchor(Anchor anchor, float width) {

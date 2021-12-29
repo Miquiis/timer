@@ -73,7 +73,7 @@ public class ClientEvents {
     {
         EasyGUI.BoxGUIElement boxGUIElement = new EasyGUI.BoxGUIElement(new EasyGUI.Anchor(EasyGUI.VAnchor.CENTER, EasyGUI.HAnchor.CENTER), event.getMatrixStack(), event.getWindow(), 0, 0, 50, 50, 5f, greenColor.getRGB());
 
-        EasyGUI.BoxGUIElement insideBox = new EasyGUI.BoxGUIElement(boxGUIElement, new EasyGUI.Anchor(EasyGUI.VAnchor.TOP, EasyGUI.HAnchor.CENTER), 0, 0, 20, 20, 1f, redColor.getRGB());
+        EasyGUI.BoxGUIElement insideBox = new EasyGUI.BoxGUIElement(boxGUIElement, new EasyGUI.Anchor(EasyGUI.VAnchor.TOP, EasyGUI.HAnchor.RIGHT), 0, 0, 20, 20, 1f, redColor.getRGB());
 
         boxGUIElement.assignChildren(insideBox).render(null);
     }
