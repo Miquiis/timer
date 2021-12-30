@@ -41,7 +41,13 @@ public class ClientEvents {
         verifyTimerManager();
         //debugRender(event);
         //renderTimer(event);
-        debugRenderBox(event);
+        //debugRenderBox(event);
+        //debugRenderText(event);
+    }
+
+    private static void debugRenderText(RenderGameOverlayEvent.Text event) {
+        EasyGUI.StringGUIElement stringGUIElement = new EasyGUI.StringGUIElement(new EasyGUI.Anchor(EasyGUI.VAnchor.TOP, EasyGUI.HAnchor.CENTER), event.getMatrixStack(), event.getWindow(), fontRenderer, "\u00a7bHello World", true, 0f, 0f, 1f, true, greenColor.getRGB());
+        stringGUIElement.render(null);
     }
 
 //    private static void renderTimer(RenderGameOverlayEvent.Text event) {
@@ -71,9 +77,9 @@ public class ClientEvents {
 
     private static void debugRenderBox(RenderGameOverlayEvent.Text event)
     {
-        EasyGUI.BoxGUIElement boxGUIElement = new EasyGUI.BoxGUIElement(new EasyGUI.Anchor(EasyGUI.VAnchor.CENTER, EasyGUI.HAnchor.CENTER), event.getMatrixStack(), event.getWindow(), 0, 0, 50, 50, 5f, greenColor.getRGB());
+        EasyGUI.BoxGUIElement boxGUIElement = new EasyGUI.BoxGUIElement(new EasyGUI.Anchor(EasyGUI.VAnchor.TOP, EasyGUI.HAnchor.LEFT), event.getMatrixStack(), event.getWindow(), 0, 0, 20, 20, 1f, false, greenColor.getRGB());
 
-        EasyGUI.BoxGUIElement insideBox = new EasyGUI.BoxGUIElement(boxGUIElement, new EasyGUI.Anchor(EasyGUI.VAnchor.TOP, EasyGUI.HAnchor.RIGHT), 0, 0, 20, 20, 1f, redColor.getRGB());
+        EasyGUI.BoxGUIElement insideBox = new EasyGUI.BoxGUIElement(boxGUIElement, new EasyGUI.Anchor(EasyGUI.VAnchor.TOP, EasyGUI.HAnchor.LEFT), 0, 0, 5, 5, 1f, false, redColor.getRGB());
 
         boxGUIElement.assignChildren(insideBox).render(null);
     }
